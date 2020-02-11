@@ -35,7 +35,7 @@ function onPress() {
                         update_kintone_record(recordID).then(() => {
                             LOGOBJ.unshift({
                                 'name': name,
-                                'created_at': getNowDatetime(),
+                                'created_at': new Date().toLocaleString({ timeZone: 'Asia/Tokyo' }),
                                 'status': '退席済'
                             })
                             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(LOGOBJ));
@@ -46,7 +46,7 @@ function onPress() {
                         insert_kintone_record(studentId).then(() => {
                             LOGOBJ.unshift({
                                 'name': name,
-                                'created_at': getNowDatetime(),
+                                'created_at': new Date().toLocaleString({ timeZone: 'Asia/Tokyo' }),
                                 'status': '出席中'
                             })
                             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(LOGOBJ));
@@ -64,14 +64,14 @@ function onPress() {
         }
     } else {
         if (key in KEYOBJ) {
-            inputString += KEYOBJ[key]
+            inputString += KEYOBJ[key];
         }
     }
 }
 
 function generateRow() {
     let tbody = '';
-    let logs = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]')
+    let logs = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
     if (logs.length > 0) {
         logs.forEach(function (value, index) {
             if (tbody == '') {
@@ -107,32 +107,31 @@ function errorAlert(text) {
     })
 }
 
-function getYMD(add = false) {
+function getYMD(after_days  = false) {
     let dt = new Date();
-    if (add) {
+    if (after_days) {
         dt.setDate(dt.getDate() + 1);
     }
     return dt.toISOString().substr(0, 10);
 }
 
 function getNowDatetime() {
-    // return new Date().toISOString().substr(0, 19) + 'Z'
     return new Date().toISOString();
 }
 
-function createQueryString(obj) {
+function createQueryString(QueryStringObj) {
     let qs = '?';
-    let lastkey = Object.keys(obj).pop();
-    for (let key in obj) {
-        qs += key + '=' + encodeURIComponent(obj[key]) + (lastkey !== key ? '&' : '');
+    let lastkey = Object.keys(QueryStringObj).pop();
+    for (let key in QueryStringObj) {
+        qs += key + '=' + encodeURIComponent(QueryStringObj[key]) + (lastkey !== key ? '&' : '');
     }
     return qs;
 }
 
 async function getStudent(barcode) {
-    let url = APICONF.student.url
+    let url = `https://${APICONF.domain}.cybozu.com/k/v1/records.json`;
     let params = createQueryString({
-        'app': `${APICONF.student.app}`,
+        'app': APICONF.student_app,
         'query': 'barcode="' + barcode + '"',
         'fields[0]': `$id`,
         'fields[1]': 'Name',
@@ -156,13 +155,15 @@ async function getStudent(barcode) {
 }
 
 async function get_kintone_record(id) {
-    let url = APICONF.GET.url
+    let url = `https://${APICONF.domain}.cybozu.com/k/v1/records.json`;
     let now = getYMD() + 'T00:00:00+0900';
     let nextday = getYMD(true) + 'T00:00:00+0900';
     let params = createQueryString({
-        'app': APICONF.GET.app,
-        'query': 'student_id =\"' + Number(id) + '\" and attend_at >\"'
-            + now + '\" and attend_at < \"' + nextday + '\" and attend_status in ("\出席中\")',
+        'app': APICONF.attend_app,
+        'query': 'student_id = "' + Number(id) + '"'
+        + ' and attend_at > "' + now + '"'
+        + ' and attend_at < "' + nextday + '"'
+        + ' and attend_status in ("\出席中\")',
         'fields[0]': 'record_id',
         'totalCount': true
     });
@@ -180,10 +181,10 @@ async function get_kintone_record(id) {
 }
 
 async function insert_kintone_record(id) {
-    let url = APICONF.POST.url
+    let url = `https://${APICONF.domain}.cybozu.com/k/v1/record.json`;
     let now = getNowDatetime();
     let data = {
-        "app": APICONF.POST.app,
+        "app": APICONF.attend_app,
         "record": {
             "student_id": {
                 "value": id
@@ -208,14 +209,13 @@ async function insert_kintone_record(id) {
         let text = await response.text();
         throw new Error(`Request failed: ${text}`);
     }
-    return true;
 }
 
 async function update_kintone_record(id) {
-    let url = APICONF.PUT.url
+    let url = `https://${APICONF.domain}.cybozu.com/k/v1/record.json`;
     let now = getNowDatetime();
     let data = {
-        "app": APICONF.PUT.app,
+        "app": APICONF.attend_app,
         "id": id,
         "record": {
             "left_at": {
@@ -238,5 +238,4 @@ async function update_kintone_record(id) {
         let text = await response.text();
         throw new Error(`Request failed: ${text}`);
     }
-    return true;
 }

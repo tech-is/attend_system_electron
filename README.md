@@ -1,4 +1,4 @@
-# TECH.I.S出席管理システム_ELECTRON
+# TECH.I.S.出席管理システム_ELECTRON
 
 ## 概要
 TECH.I.S内での生徒の出席を管理するシステムです。  
@@ -40,33 +40,20 @@ $ npm install
 ```
 
 ## Kintone設定
-/src/config/config.json.exampleをコピーして/src/config/config.jsonを作成してください
+/src/config/config.json.exampleをコピーしてsrc/config/config.jsonを作成してください
 
 ```
 $ cp src/config/config.json.example src/config/config.json
 ```
 
-コピー後はkintoneのサブドメイン名とアプリIDを設定してください
+コピー後はkintoneのサブドメイン名とアプリID,APIトークンを設定してください
 
 ```
 {
-    "token": "[kintoneAPIトークン]",
-    "student": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/records.json",
-        "app": "[生徒マスタアプリID]"
-    },
-    "GET": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/records.json",
-        "app": "[出席管理アプリID]"
-    },
-    "POST": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/record.json",
-        "app": "[出席管理アプリID]"
-    },
-    "PUT": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/record.json",
-        "app": "[出席管理アプリID]"
-    }
+    "domain" : "[kintoneサブドメイン名]", /* https://(サブドメイン名).cybozu.com */
+    "token" : "[kintoneAPIトークン]",
+    "student_app" : "[生徒マスタアプリID]",
+    "attend_app" : "[出席管理アプリID]"
 }
 ```
 
