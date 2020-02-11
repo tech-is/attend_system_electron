@@ -1,6 +1,7 @@
 {
-    "domain" : "",
-    "token" : "",
-    "student_app" : "",
-    "attend_app" : ""
+    "subdomain": "",
+    "student_token": "",
+    "attend_token": "",
+    "student_app": "",
+    "attend_app": ""
 }

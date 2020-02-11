@@ -50,8 +50,9 @@ $ cp src/config/config.json.example src/config/config.json
 
 ```
 {
-    "domain" : "[kintoneサブドメイン名]", /* https://(サブドメイン名).cybozu.com */
-    "token" : "[kintoneAPIトークン]",
+    "subdomain" : "[kintoneサブドメイン名]", /* https://(サブドメイン名).cybozu.com */
+    "student_token": "[kintoneAPIトークン]",
+    "attend_token": "[kintoneAPIトークン]",
     "student_app" : "[生徒マスタアプリID]",
     "attend_app" : "[出席管理アプリID]"
 }

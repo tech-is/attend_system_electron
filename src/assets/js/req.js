@@ -24,11 +24,11 @@ function onPress() {
         let barcode = Number(inputString);
         inputString = '';
         if (barcode > 0) {
-            getStudent(barcode)
+            fetchStudent(barcode)
                 .then(json => {
                     name = json.Name.value;
                     studentId = json.$id.value;
-                    return get_kintone_record(studentId);
+                    return fetch_kintone_record(studentId);
                 })
                 .then(recordID => {
                     if (recordID > 0) {
@@ -107,11 +107,9 @@ function errorAlert(text) {
     })
 }
 
-function getYMD(after_days  = false) {
+function getYMD(after_days = 0) {
     let dt = new Date();
-    if (after_days) {
-        dt.setDate(dt.getDate() + 1);
-    }
+    dt.setDate(dt.getDate() + after_days);
     return dt.toISOString().substr(0, 10);
 }
 
@@ -128,8 +126,8 @@ function createQueryString(QueryStringObj) {
     return qs;
 }
 
-async function getStudent(barcode) {
-    let url = `https://${APICONF.domain}.cybozu.com/k/v1/records.json`;
+async function fetchStudent(barcode) {
+    let url = `https://${APICONF.subdomain}.cybozu.com/k/v1/records.json`;
     let params = createQueryString({
         'app': APICONF.student_app,
         'query': 'barcode="' + barcode + '"',
@@ -140,7 +138,7 @@ async function getStudent(barcode) {
     let req = url + params;
     let response = await fetch(req, {
         headers: {
-            'X-Cybozu-API-Token': APICONF.token
+            'X-Cybozu-API-Token': APICONF.student_token
         }
     })
     if (await !response.ok) {
@@ -154,22 +152,22 @@ async function getStudent(barcode) {
     return json['records'][0];
 }
 
-async function get_kintone_record(id) {
-    let url = `https://${APICONF.domain}.cybozu.com/k/v1/records.json`;
+async function fetch_kintone_record(id) {
+    let url = `https://${APICONF.subdomain}.cybozu.com/k/v1/records.json`;
     let now = getYMD() + 'T00:00:00+0900';
-    let nextday = getYMD(true) + 'T00:00:00+0900';
+    let nextday = getYMD(1) + 'T00:00:00+0900';
     let params = createQueryString({
         'app': APICONF.attend_app,
         'query': 'student_id = "' + Number(id) + '"'
-        + ' and attend_at > "' + now + '"'
-        + ' and attend_at < "' + nextday + '"'
-        + ' and attend_status in ("\出席中\")',
+            + ' and attend_at > "' + now + '"'
+            + ' and attend_at < "' + nextday + '"'
+            + ' and attend_status in ("\出席中\")',
         'fields[0]': 'record_id',
         'totalCount': true
     });
     let response = await fetch(url + params, {
         headers: {
-            'X-Cybozu-API-Token': APICONF.token
+            'X-Cybozu-API-Token': `${APICONF.student_token},${APICONF.attend_token}`
         }
     })
     if (await !response.ok) {
@@ -181,7 +179,7 @@ async function get_kintone_record(id) {
 }
 
 async function insert_kintone_record(id) {
-    let url = `https://${APICONF.domain}.cybozu.com/k/v1/record.json`;
+    let url = `https://${APICONF.subdomain}.cybozu.com/k/v1/record.json`;
     let now = getNowDatetime();
     let data = {
         "app": APICONF.attend_app,
@@ -201,7 +199,7 @@ async function insert_kintone_record(id) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Cybozu-API-Token': APICONF.token
+            'X-Cybozu-API-Token': `${APICONF.student_token},${APICONF.attend_token}`
         },
         body: JSON.stringify(data),
     })
@@ -212,7 +210,7 @@ async function insert_kintone_record(id) {
 }
 
 async function update_kintone_record(id) {
-    let url = `https://${APICONF.domain}.cybozu.com/k/v1/record.json`;
+    let url = `https://${APICONF.subdomain}.cybozu.com/k/v1/record.json`;
     let now = getNowDatetime();
     let data = {
         "app": APICONF.attend_app,
@@ -230,7 +228,7 @@ async function update_kintone_record(id) {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'X-Cybozu-API-Token': APICONF.token
+            'X-Cybozu-API-Token': `${APICONF.student_token},${APICONF.attend_token}`
         },
         body: JSON.stringify(data),
     })
