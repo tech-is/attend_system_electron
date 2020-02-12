@@ -1,19 +1,7 @@
 {
-    "token": "",
-    "student": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/records.json",
-        "app": ""
-    },
-    "GET": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/records.json",
-        "app": ""
-    },
-    "POST": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/record.json",
-        "app": ""
-    },
-    "PUT": {
-        "url": "https://(サブドメイン名).cybozu.com/k/v1/record.json",
-        "app": ""
-    }
+    "subdomain": "",
+    "student_token": "",
+    "attend_token": "",
+    "student_app": "",
+    "attend_app": ""
 }

@@ -11,13 +11,16 @@ app.on('window-all-closed', function () {
 
 function createWindow() {
     // メイン画面の表示。ウィンドウの幅、高さを指定できる
-    win = new BrowserWindow({ width: 800, height: 600 });
-
-    //htmlファイル読み込み
+    win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
     win.loadFile('index.html');
-
     // デベロッパーツール起動
-    // win.webContents.openDevTools();
+    //win.webContents.openDevTools();
 }
 
 app.on('ready', createWindow);

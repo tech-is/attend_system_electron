@@ -9,8 +9,11 @@
     },
     "author": "",
     "license": "ISC",
-    "dependencies": {
+    "devDependencies": {
         "electron": "^7.1.9",
-        "sweetalert2": "^9.7.1"
+        "electron-builder": "^22.3.2"
+    },
+    "dependencies": {
+        "electron-json-storage": "^4.1.8"
     }
 }

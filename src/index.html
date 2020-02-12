@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='ja'>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>TECH.I.S.出席管理</title>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css'
+        integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4' crossorigin='anonymous'>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <div class='container'>
+        <div class="imgWrapper" style="margin: 10px;">
+            <img src="assets/img/logo.png" alt="">
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div id="clock_frame" class="text-center" style="margin: 10px;"></div>
+            </div>
+            <div class="col-12 log-wrapper">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>
+                                名前
+                            </th>
+                            <th>
+                                記録時間
+                            </th>
+                            <th>
+                                出席状況
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id='tbody'></tbody>
+                </table>
+            </div>
+        </div>
+        <script src="assets/lib/sweetalert2@9.js"></script>
+        <script src="assets/js/loadjson.js"></script>
+        <script src="assets/js/clock.js"></script>
+        <script src="assets/js/req.js"></script>
+        <script type='text/javascript'>
+            window.onload = generateRow
+            document.onkeydown = onPress;
+        </script>
+</body>
+
+</html>
